@@ -12,8 +12,6 @@ class Str(Field):
                 raise ValueError("Str length type must be int.")
             field_type = f'varchar({length})'
 
-        print(field_type)
-
         default = {
             'short': None,
             'long': None,

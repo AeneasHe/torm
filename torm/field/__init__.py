@@ -1,4 +1,4 @@
-from torm.field.Field import *
+from torm.field.Field import Field
 from torm.field.Int import Int
 from torm.field.Float import Float
 from torm.field.Str import Str

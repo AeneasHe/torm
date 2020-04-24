@@ -1,6 +1,5 @@
-import path
-from torm.model import *
-import torm.field as f
+from torm import Model
+from torm import f
 
 
 class User(Model):

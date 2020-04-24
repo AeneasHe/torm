@@ -16,7 +16,7 @@ class Config(object):
 
     def __init__(self):
         env = Env()
-        env.read_env()
+        # env.read_env()
         self.__env = env
 
     def reset(self, name='default'):
