@@ -11,7 +11,8 @@ class List(Field):
             'meta': 'short',
             'default': [],
             'field_type': 'list',
-            'key': False
+            'key': False,
+            'only_db_types': ['mongo']
         }
         default.update(kws)
         super().__init__(**default)

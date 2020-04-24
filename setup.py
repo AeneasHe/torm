@@ -3,19 +3,19 @@ from setuptools import setup, find_namespace_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-NAME = "taraxa-py"
+NAME = "torm"
 
-DESCRIPTION = "Taraxa blockchain  RPC client."
+DESCRIPTION = "mongodb style python orm."
 
-KEYWORDS = "Taraxa blockchain RPC client"
+KEYWORDS = "mongodb orm"
 
 AUTHOR = "Aeneas"
 
 AUTHOR_EMAIL = "kai.he@taraxa.io"
 
-URL = "http://taraxa.io"
+URL = "https://github.com/cofepy"
 
-VERSION = "0.0.5"
+VERSION = "0.0.1"
 
 LICENSE = "MIT"
 

@@ -11,8 +11,8 @@ class Float(Field):
             'meta': 'left',
             'default': 0,
             'field_type': 'decimal(12,6)',
-            'key': False
-
+            'key': False,
+            'only_db_types': None
         }
         default.update(self.boundary(args))
         default.update(kws)
@@ -21,7 +21,7 @@ class Float(Field):
         if default['meta'] not in _meta:
             raise ValueError('meta must be in %s.' % _meta)
 
-        super(Float, self).__init__(**default)
+        super().__init__(**default)
 
     def __get__(self, instance, owner):
 

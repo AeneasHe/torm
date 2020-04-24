@@ -7,4 +7,8 @@ from torm.field.List import List
 from torm.field.DictList import DictList
 
 from torm.field.Dict import Dict
-from torm.field.Map import Map
+
+from torm.field.Email import Email
+from torm.field.EmailList import EmailList
+
+from torm.utl.Map import Map

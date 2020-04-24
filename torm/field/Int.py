@@ -12,7 +12,8 @@ class Int(Field):
             'meta': 'left',
             'default': 0,
             'field_type': 'int(16)',
-            'key': False
+            'key': False,
+            'only_db_types': None
         }
 
         default.update(self.boundary(args))
@@ -22,7 +23,7 @@ class Int(Field):
         if default['meta'] not in _meta:
             raise ValueError('meta must be in %s.' % _meta)
 
-        super(Int, self).__init__(**default)
+        super().__init__(**default)
 
     def __get__(self, instance, owner):
         return self.value

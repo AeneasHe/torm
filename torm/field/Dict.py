@@ -1,7 +1,5 @@
 from torm.field import Field
 from torm.utl.Error import *
-
-import decimal
 import json
 
 
@@ -12,16 +10,11 @@ class Dict(Field):
             'right': None,
             'meta': 'left',
             'default': {},
-            'field_type': 'int(16)',
-            'key': False
+            'field_type': 'dict',
+            'key': False,
+            'only_db_types': ['mongo']
         }
-        super(Dict, self).__init__(**default)
-
-        # d = args[0]
-        # if d is not None:
-        #     for k, v in d.items():
-        #         self[k] = str(v) if isinstance(v, decimal.Decimal) else v
-        # return super().__init__()
+        super().__init__(**default)
 
     def __get__(self, instance, owner):
         return self.value

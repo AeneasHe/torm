@@ -2,7 +2,7 @@ from torm.field import Field
 from torm.utl.Error import *
 
 
-class DictList(Field):
+class StrList(Field):
     def __init__(self, *args, **kwargs):
         default = {
             'left': None,
@@ -14,6 +14,11 @@ class DictList(Field):
             'only_db_types': ['mongo']
         }
         super().__init__(**default)
+
+        # if len(args):
+        #     args = (generator_check(args[0]),)
+
+        # super().__init__(*args, **kwargs)
 
     def __get__(self, instance, owner):
         return self.value
@@ -31,8 +36,8 @@ class DictList(Field):
         return True
 
     def check(self, item):
-        if not type(item) == dict:
-            raise TypeError('element require dict type')
+        if not type(item) == str:
+            raise TypeError('element require str type')
 
     def generator_check(self, g):
         for item in g:

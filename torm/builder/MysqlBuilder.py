@@ -60,7 +60,7 @@ class MysqlBuilder(BaseBuilder):
 
     # 增
     def create(self):
-        data = self.dict()
+        data = self.to_dict()
         if data:
             if data and isinstance(data, dict):
                 data = [
@@ -341,3 +341,65 @@ class MysqlBuilder(BaseBuilder):
         elif data[1] in ['between', 'not between']:
             return self._compile_between((data[0], data[1], data[2]))
         return '{} {} {}'.format(expr.format_column(data[0], self), data[1], expr.format_string(data[2]))
+
+    @combomethod
+    def InsertOne(self, item):
+
+        if not self.validate_type(item):
+            raise TypeError(f'item must be {self.__class__} type')
+
+        item = encode_id(item.to_ordict())
+        return self.connection.create(self, item)
+
+    @combomethod
+    def InsertMany(self, items):
+        all_validate_type = all([self.validate_type(item) for item in items])
+        if not all_validate_type:
+            raise TypeError(f'list element must be {self.__class__} type')
+
+        table = self.connection.table(self)
+        return table.insert_many(items)
+
+    @combomethod
+    def FindOne(self, *args, **kwargs):
+        where = parse_args(args, kwargs, _depth=4)
+
+        table = self.connection.table(self)
+
+        item = table.find_one(where)
+
+        item = self.__class__(decode_id(item))
+        return item
+
+    @combomethod
+    def FindMany(self, *args, **kwargs):
+        where = parse_args(args, kwargs)
+        table = self.connection.table(self)
+
+        items = table.find(where)
+
+        items = [Map(decode_id(item)) for item in items]
+        return items
+
+    @combomethod
+    def UpdateOne(self, where={}, item={}):
+        if not where:
+            return None
+        where = Map(where, _depth=4)
+        where = encode_id(where)
+
+        if not item:
+            return None
+        if "id" in item:
+            item.pop("id")
+
+        table = self.connection.table(self)
+        r = table.update_one(where, {"$set": item})
+        return r
+
+    @combomethod
+    def DeleteOne(self, *args, **kwargs):
+        where = parse_args(args, kwargs, _depth=4)
+        table = self.connection.table(self)
+        r = table.delete_one(where)
+        return r

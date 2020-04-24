@@ -1,8 +1,10 @@
 from torm.field import Field
 from torm.utl.Error import *
 
+import re
 
-class DictList(Field):
+
+class EmailList(Field):
     def __init__(self, *args, **kwargs):
         default = {
             'left': None,
@@ -30,11 +32,27 @@ class DictList(Field):
         self.generator_check(value)
         return True
 
-    def check(self, item):
-        if not type(item) == dict:
-            raise TypeError('element require dict type')
-
     def generator_check(self, g):
         for item in g:
             self.check(item)
             yield item
+
+    def check(self, item):
+        model = self.model
+        key = self.name
+
+        if type(item) != str:
+            raise error_type(key, item, model, str)
+        p = re.compile(r'''(
+            [a-zA-Z0-9._%+-]+           # email-username
+            @
+            [a-zA-Z0-9.-]+              # domain-name
+            \.[a-zA-Z]{2,4}             # dot-something
+            )''', re.VERBOSE)
+
+        s = re.search(p, item)
+        if s:
+            position = s.span()         # 第一个匹配的起始位置
+            if len(item) == position[1]:
+                return True
+        raise error_type(key, item, model, "email")

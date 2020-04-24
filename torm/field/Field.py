@@ -11,6 +11,8 @@ class Field(object):
         self.right = kws.get('right')  # 最大值
         self.meta = kws.get('meta')  # 边界判断规则
 
+        self.only_db_types = kws.get('only_db_types', [])
+
     def __str__(self):
         return '<%s>' % (self.__class__.__name__)
 

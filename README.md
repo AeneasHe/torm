@@ -35,7 +35,7 @@ from torm.field import Str,Int
 
 
 class Record(Model):
-    __table__ = 'record'
+    __tablename__ = 'record'
 
     hash = Str()
     subject = Str()

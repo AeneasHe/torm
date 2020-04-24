@@ -9,6 +9,8 @@ from torm.connection import MongoConnection, MysqlConnection
 def _connection(config):
     if config['db_type'] == 'mongo':
         return MongoConnection(config)
+    if config['db_type'] == 'mysql':
+        return MysqlConnection(config)
 
 
 class ModelMetaclass(type):
@@ -21,26 +23,31 @@ class ModelMetaclass(type):
 
     # 返回子类
     def __new__(cls, name, bases, attrs):
+        '''
+        name:类名
+        bases:父类
+        attrs:类的所有属性字典
+        '''
 
         if name == 'Model':
             return type.__new__(cls, name, bases, attrs)  # 返回Model类型
 
-        fields = dict()
-        keys = list(attrs.keys())
-        for k in keys:
-            if isinstance(attrs[k], Field):
-                fields[k] = attrs[k]
-#                attrs.pop(k)
+        model_fields = dict()
 
-        field = fields.keys()
-        attrs['__fields__'] = fields  # 保存字段的属性
+        cls_keys = list(attrs.keys())
+        for k in cls_keys:
+            if isinstance(attrs[k], Field):
+                model_fields[k] = attrs[k]
+
+        field = model_fields.keys()
+        attrs['__fields__'] = model_fields  # 保存字段的属性
         attrs['__field__'] = list(field)  # 保存字段名列表
-        attrs['__config__'] = cls.init_config(cls, name, attrs)
+        attrs['__config__'] = cls.init_config(cls, name, attrs)  # 连接配置
 
         attrs['config'] = attrs['__config__']
-        attrs['connection'] = _connection(attrs['__config__'])
         attrs['db_name'] = attrs['__config__']['db']
         attrs['table_name'] = attrs['__config__']['table']
+        attrs['connection'] = _connection(attrs['__config__'])
 
         # 根据数据库类型，继承各数据库的builder
         dbtype = attrs['__config__']['db_type']
@@ -49,6 +56,7 @@ class ModelMetaclass(type):
         elif dbtype == 'mysql':
             bases = bases + (MysqlBuilder,)
 
+        # 使Model同时继承builder
         return type.__new__(cls, name, bases, attrs)
 
     def __init__(self, *args, **kwargs):
@@ -67,16 +75,16 @@ class ModelMetaclass(type):
         # 数据库类型
         __config['db_type'] = db_type
         # 数据库名
-        __config['db'] = attrs.get("__db__", config.env(env_name)('DB'))
+        __config['db'] = attrs.get("__dbname__", config.env(env_name)('DB'))
         # 表名
-        __config['table'] = attrs.get("__table__", name.lower())
+        __config['table'] = attrs.get("__tablename__", name.lower())
 
-        # 连接参数
+        # 数据库连接参数
         __config['host'] = config.env(env_name)('HOST')
         __config['port'] = int(config.env(env_name)('PORT'))
         __config['charset'] = config.env(env_name)('CHARSET')
 
-        # 用户配置
+        # 数据库用户名和密码配置
         if db_type == "mysql":
             __config['user'] = config.env(env_name)('USER')
             __config['password'] = config.env(env_name)('PASSWORD')

@@ -1,5 +1,5 @@
 from torm.builder.BaseBuilder import BaseBuilder
-from torm.field.Map import Map
+from torm.utl.Map import Map
 
 from bson.objectid import ObjectId
 

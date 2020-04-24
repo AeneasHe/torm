@@ -1,25 +1,18 @@
 from torm.field import Field
 from torm.utl.Error import *
 
+import re
 
-class Str(Field):
+
+class Email(Field):
 
     def __init__(self, *args, **kws):
-        field_type = 'varchar(32)'
-        if args:
-            length = args[0]
-            if type(length) != int:
-                raise ValueError("Str length type must be int.")
-            field_type = f'varchar({length})'
-
-        print(field_type)
-
         default = {
             'short': None,
             'long': None,
             'meta': 'short',
             'default': '',
-            'field_type': field_type,
+            'field_type': 'email',
             'key': False,
             'only_db_types': None
         }
@@ -36,7 +29,19 @@ class Str(Field):
     def validate(self, value):
         model = self.model
         key = self.name
+
         if type(value) != str:
             raise error_type(key, value, model, str)
+        p = re.compile(r'''(
+            [a-zA-Z0-9._%+-]+           # email-username
+            @
+            [a-zA-Z0-9.-]+              # domain-name
+            \.[a-zA-Z]{2,4}             # dot-something
+            )''', re.VERBOSE)
 
-        return True
+        s = re.search(p, value)
+        if s:
+            position = s.span()         # 第一个匹配的起始位置
+            if len(value) == position[1]:
+                return True
+        raise error_type(key, value, model, "email")

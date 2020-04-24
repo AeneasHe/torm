@@ -4,7 +4,7 @@ import time
 from torm.model.ModelMetaclass import *
 from collections import OrderedDict
 from combomethod import combomethod
-from torm.field.Map import Map
+from torm.utl.Map import Map
 
 
 class Model(metaclass=ModelMetaclass):
@@ -23,8 +23,17 @@ class Model(metaclass=ModelMetaclass):
                 attrs = dict(zip(self.__field__, args))
         attrs.update(kws)
 
-        # 属性值绑定,只绑定field的属性，多余的丢弃
+        # 将属性绑定到Model上,只绑定field的属性，多余的丢弃
+        # print(self.config['db_type'])  # 数据库类型
+        db_type = self.config['db_type']
+
         for key in self.__field__:
+            # 检查数据库是否支持该字段的类型
+            if self.__fields__[key].only_db_types:
+                if not self.config['db_type'] in self.__fields__[key].only_db_types:
+                    raise TypeError(
+                        f'type of "{key}" {self.__fields__[key]} can only be used in db {self.__fields__[key].only_db_types}')
+
             if key in attrs:  # 如果实例化的参数有该值，就采用该值
                 setattr(self, key, attrs[key])
             else:  # 没有提供该值，就采用默认值
@@ -49,7 +58,6 @@ class Model(metaclass=ModelMetaclass):
         # 限制可以绑定的属性
         if key in self.__field__:
             object.__setattr__(self, key, value)
-
         elif key in ['connection', 'config', 'table_name', 'isinstance', 'isclass'] or (key.startswith('__') and key.endswith('__')):
             object.__setattr__(self, key, value)
         else:
@@ -70,10 +78,10 @@ class Model(metaclass=ModelMetaclass):
     def __iter__(self):
         return iter(self.__field__)
 
-    def __str__(self):
-        values = ', '.join('\n    {}={!r}'.format(
+    def __str__(self, pretty=False):
+        values = ', '.join('{}={!r}'.format(
             i, self[i]) for i in self.__field__)
-        return '{}({}\n)'.format(self.__class__.__name__, values)
+        return '{}({})'.format(self.__class__.__name__, values)
 
     def __bool__(self):
         bools = [bool(self[i]) for i in self.__field__]
@@ -95,6 +103,11 @@ class Model(metaclass=ModelMetaclass):
         except Exception as e:
             return e
 
+    def pretty(self):
+        values = ', '.join('\n    {}={!r}'.format(
+            i, self[i]) for i in self.__field__)
+        return '{}({}\n)'.format(self.__class__.__name__, values)
+
     def to_dict(self):
         d = dict()
         for i in self.__field__:
@@ -111,7 +124,7 @@ class Model(metaclass=ModelMetaclass):
         return Map(self.to_ordict())
 
     @combomethod
-    def data(self):
+    def to_df(self):
         return pd.DataFrame.from_records(self.get())
 
     def gets(self, id, name):

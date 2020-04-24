@@ -26,7 +26,7 @@ def error_type(key, value, model, _type):
     if type(value) == str:
         value = '\'%s\'' % value
     return TypeError(
-        'invalid type of %s, %s.%s value must be or in %s type.' % (value, model, key, _type))
+        'invalid type of %s, %s.%s value must be %s type.' % (value, model, key, _type))
 
 
 def error_gt(key, value, model, limit):
