@@ -1,6 +1,8 @@
 # torm
 
-mongodb style orm
+mongodb style orm.
+
+mongodb,mysql are supported. 
 
 ## install
 ```
@@ -13,7 +15,7 @@ or
 pip install torm
 ```
 ## .env
-add .env file to top folder
+add .env file to top folder or copy one file in envs to top folder.
 for example:
 
 ```
@@ -35,6 +37,18 @@ from torm.field import Str,Int
 
 
 class Record(Model):
+    # config file ".env.mongo"; if not given, default config file is ".env".
+    __configname__ = 'mongo'  
+   
+    # database type; if not given, will use db defined in config file
+    # if no config file will use "mongo" as default.
+    __dbtype__ = 'mongo' 
+
+    # database name: if not given, will use db defined in config file
+    # if no config file will use "test" as default.
+    __dbname__ = 'test'
+
+    # table name: if not given, will use model class name low case as default
     __tablename__ = 'record'
 
     hash = Str()

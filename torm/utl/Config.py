@@ -27,7 +27,7 @@ class Config(object):
 
     # 读取配置文件
     def env(self, name='default'):
-        path = '.env' if name == 'default' else '.env-' + name
+        path = '.env' if name == 'default' else '.env.' + name
         env = Env()
 
         err = None
