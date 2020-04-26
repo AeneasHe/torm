@@ -4,9 +4,6 @@ from torm import f
 
 class User(Model):
     __config__ = "mysql"
-    # __dbtype__ = "mysql"
-    # __dbname__ = "test"
-    # __tablename__ = "user"
 
     id = f.Int(key=True)
     display_name = f.Str(32)

@@ -1,6 +1,10 @@
 __pycache__
 .vscode
 .env
+
+./.env-mongo
+./.env-mysql
+
 .DS_Store
 
 *.egg-info
