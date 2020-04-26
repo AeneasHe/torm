@@ -68,26 +68,32 @@ class ModelMetaclass(type):
         env_name = attrs.get("__config__", "default")
 
         db_type = attrs.get(
-            "__dbtype__", config.env(env_name)('DBTYPE'))
+            "__dbtype__", config.env(env_name)('TORM_DB_TYPE'))
 
         # 配置名称
         __config['config_name'] = env_name
         # 数据库类型
         __config['db_type'] = db_type
         # 数据库名
-        __config['db'] = attrs.get("__dbname__", config.env(env_name)('DB'))
+        __config['db'] = attrs.get(
+            "__dbname__",
+            config.env(env_name)('TORM_DB')
+        )
         # 表名
-        __config['table'] = attrs.get("__tablename__", name.lower())
+        __config['table'] = attrs.get(
+            "__tablename__",
+            name.lower()
+        )
 
         # 数据库连接参数
-        __config['host'] = config.env(env_name)('HOST')
-        __config['port'] = int(config.env(env_name)('PORT'))
-        __config['charset'] = config.env(env_name)('CHARSET')
+        __config['host'] = config.env(env_name)('TORM_HOST')
+        __config['port'] = int(config.env(env_name)('TORM_PORT'))
+        __config['charset'] = config.env(env_name)('TORM_CHARSET')
 
         # 数据库用户名和密码配置
         if db_type == "mysql":
-            __config['user'] = config.env(env_name)('USER')
-            __config['password'] = config.env(env_name)('PASSWORD')
+            __config['user'] = config.env(env_name)('TORM_USER')
+            __config['password'] = config.env(env_name)('TORM_PASSWORD')
 
         return __config
 

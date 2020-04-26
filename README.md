@@ -17,13 +17,13 @@ add .env file to top folder
 for example:
 
 ```
-DBTYPE   = mongo
-DB       = test_default
+TORM_DB_TYPE   = mongo
+TORM_DB       = test_default
 
-HOST     = 127.0.0.1
-PORT     = 27017
+TORM_HOST     = 127.0.0.1
+TORM_PORT     = 27017
 
-CHARSET  = utf8mb4
+TORM_CHARSET  = utf8mb4
 ```
 
 ## useage

@@ -87,7 +87,7 @@ class MysqlBuilder(BaseBuilder):
             else:
                 field_sql += f"`{v.name}` {v.field_type} NOT NULL DEFAULT {v.default},"
 
-        sql = f"CREATE TABLE `{self.table_name}` ( {field_sql} PRIMARY KEY (`{key}`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET={charset}; "
+        sql = f"CREATE TABLE `{self.table_name}` ( {field_sql} PRIMARY KEY (`{key}`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT TORM_CHARSET={charset}; "
         self.connection.execute(sql)
         return None
 

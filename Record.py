@@ -4,7 +4,7 @@ from torm.utl.Map import Map
 
 
 class Record(Model):
-    # __dbname__ = 'dd'  # 指定数据库名，默认采用env中的DB值作为数据库名
+    # __dbname__ = 'dd'  # 指定数据库名，默认采用env中的TORM_DB值作为数据库名
     __tablename__ = 'record'  # 指定表名，默认采用类名的小写作为表名
 
     hash = f.Str()

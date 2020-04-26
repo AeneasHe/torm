@@ -35,11 +35,11 @@ class Config(object):
             env.read_env(path=path, override=True)
         except Exception as e:
             if name == 'default':
-                os.environ["DBTYPE"] = "mongo"
-                os.environ["DB"] = "test"
-                os.environ["HOST"] = "127.0.0.1"
-                os.environ["PORT"] = "27017"
-                os.environ["CHARSET"] = "utf8mb4"
+                os.environ["TORM_DB_TYPE"] = "mongo"
+                os.environ["TORM_DB"] = "test"
+                os.environ["TORM_HOST"] = "127.0.0.1"
+                os.environ["TORM_PORT"] = "27017"
+                os.environ["TORM_CHARSET"] = "utf8mb4"
                 env = Env()
             elif str(e) == 'Starting path not found':
                 err = Exception(
