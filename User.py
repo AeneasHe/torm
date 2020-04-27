@@ -28,27 +28,34 @@ def test_create_table():
 
 
 def test_insert_one():
-    user = User(name='kai', display_name='kai.he')
-    user.display_name = 'Kai He'
+    user = User(name='user_name', display_name='user name')
+    user.display_name = 'User Name'
     u = User.InsertOne(user)
     print(u)
 
 
 def test_find_one():
-    r = User.FindOne({'name': 'kai'})
+    r = User.FindOne({'name': 'user_name'})
     print(r)
 
 
 def test_find_many():
-    r = User.FindMany({'name': 'kai'})
+    r = User.FindMany({'name': 'user_name'})
     print(r)
 
 
 def test_update_one():
-    r = User.UpdateOne({'name': 'kai'}, {'display_name': 'Kai He'})
+    r = User.UpdateOne({'name': 'user_name'}, {'display_name': 'User Name'})
     print(r)
 
 
 def test_delete_one():
-    r = User.DeleteOne({'name': 'kai'})
+    r = User.DeleteOne({'name': 'user_name'})
     print(r)
+
+
+# test_insert_one()
+test_find_one()
+# test_update_one()
+# test_find_one()
+# test_delete_one()

@@ -282,6 +282,8 @@ class MongoBuilder(BaseBuilder):
         table = self.connection.table(self)
 
         item = table.find_one(where)
+        if not item:
+            return None
         item = self.__class__(decode_id(item))
         return item
 
@@ -291,7 +293,8 @@ class MongoBuilder(BaseBuilder):
         table = self.connection.table(self)
 
         items = table.find(where)
-
+        if not items:
+            return []
         items = [Map(decode_id(item)) for item in items]
         return items
 

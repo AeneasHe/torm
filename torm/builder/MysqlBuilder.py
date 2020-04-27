@@ -28,7 +28,7 @@ def parse_args(args, kwargs, _depth=3):
     where = {}
 
     for arg in args:
-        if type(arg) in [dict, set]:
+        if type(arg) in [dict, set, Map]:
             arg = Map(arg, _depth=_depth)
             where.update(arg)
         elif type(arg) == str:
@@ -442,12 +442,21 @@ class MysqlBuilder(BaseBuilder):
         if not item:
             return None
         where = Map(where, _depth=4)
-
         if isinstance(item, self.__class__):
             item = item.to_dict()
-        return self.where(where).update(item)
+
+        # 先查找第一个，然后删除
+        _item = self.FindOne(where)
+        if _item:
+            return self.where({'id': _item.id}).update(item)
+        else:
+            return None
 
     @combomethod
     def DeleteOne(self, *args, **kwargs):
         where = parse_args(args, kwargs, _depth=4)
-        self.where(where).delete()
+        _item = self.FindOne(where)
+        if _item:
+            return self.where({'id': _item.id}).delete()
+        else:
+            return None
