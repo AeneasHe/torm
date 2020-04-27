@@ -1,10 +1,10 @@
-# torm
+# Torm
 
 mongodb style orm.
 
 mongodb,mysql are supported. 
 
-## install
+## Install
 ```
 git clone https://github.com/cofepy/torm
 cd torm
@@ -14,7 +14,7 @@ or
 ```
 pip install torm
 ```
-## .env
+## Env file
 add .env file to top folder or copy one file in envs to top folder.
 for example:
 
@@ -28,7 +28,7 @@ TORM_PORT     = 27017
 TORM_CHARSET  = utf8mb4
 ```
 
-## useage
+## Useage
 
 ``` python
 
@@ -41,14 +41,14 @@ class Record(Model):
     __configname__ = 'mongo'  
    
     # database type; if not given, will use db defined in config file
-    # if no config file will use "mongo" as default.
+    # if no config file, torm will use "mongo" as default.
     __dbtype__ = 'mongo' 
 
     # database name: if not given, will use db defined in config file
-    # if no config file will use "test" as default.
+    # if no config file, torm  will use "test" as default.
     __dbname__ = 'test'
 
-    # table name: if not given, will use model class name low case as default
+    # table name: if not given, torm  will use model class name low case as default
     __tablename__ = 'record'
 
     hash = Str()

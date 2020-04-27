@@ -29,6 +29,8 @@ class Email(Field):
     def validate(self, value):
         model = self.model
         key = self.name
+        if value == "":
+            return True
 
         if type(value) != str:
             raise error_type(key, value, model, str)

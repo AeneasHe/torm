@@ -116,11 +116,8 @@ class MongoBuilder(BaseBuilder):
         self.__subquery__ = []
         self.__groupbykey__ = None
 
-    @combomethod
-    def validate_type(self, item):
-        return isinstance(item, self.__class__)
-
     # 增
+
     def create(self):
         data = self.to_ordict()
         if data:
@@ -273,7 +270,7 @@ class MongoBuilder(BaseBuilder):
     def InsertMany(self, items):
         all_validate_type = all([self.validate_type(item) for item in items])
         if not all_validate_type:
-            raise TypeError(f'list element must be {self.__class__} type')
+            raise TypeError(f'all list element must be {self.__class__} type')
 
         table = self.connection.table(self)
         return table.insert_many(items)
@@ -285,7 +282,6 @@ class MongoBuilder(BaseBuilder):
         table = self.connection.table(self)
 
         item = table.find_one(where)
-
         item = self.__class__(decode_id(item))
         return item
 

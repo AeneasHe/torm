@@ -14,7 +14,7 @@ class Field(object):
         self.only_db_types = kws.get('only_db_types', [])
 
     def __str__(self):
-        return '<%s>' % (self.__class__.__name__)
+        return f'<{self.__class__.__name__} value={self.value}>'
 
     def __delete__(self, instance):
         raise AttributeError(r"%s attribute '%s' is forbidden to be deleted." % (

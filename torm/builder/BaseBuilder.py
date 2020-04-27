@@ -9,9 +9,6 @@ def _connection(config):
     if config['db_type'] == 'mysql':
         return MysqlConnection(config)
 
-    if config['db_type'] == 'sqlite':
-        return SqliteConnection(config)
-
 
 class BaseBuilder():
 
@@ -20,6 +17,10 @@ class BaseBuilder():
 
     def __init__(self, *args, **kwargs):
         super().__init__()
+
+    @combomethod
+    def validate_type(self, item):
+        return isinstance(item, self.__class__)
 
     def _connection(self):
         config = self.__config__
@@ -30,5 +31,3 @@ class BaseBuilder():
         if config['db_type'] == 'mysql':
             return MysqlConnection(config)
 
-        if config['db_type'] == 'sqlite':
-            return SqliteConnection(config)

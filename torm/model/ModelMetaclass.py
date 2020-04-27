@@ -28,7 +28,6 @@ class ModelMetaclass(type):
         bases:父类
         attrs:类的所有属性字典
         '''
-
         if name == 'Model':
             return type.__new__(cls, name, bases, attrs)  # 返回Model类型
 

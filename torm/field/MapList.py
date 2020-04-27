@@ -1,6 +1,6 @@
 from torm.field import Field
 from torm.utl.Error import *
-from torm.utl.Map import Map
+import torm.utl
 
 
 class MapList(Field):
@@ -37,7 +37,7 @@ class MapList(Field):
         return True
 
     def check(self, item):
-        if not type(item) == Map:
+        if type(value) == torm.utl.Map.Map or type(value) == dict:
             raise TypeError('element require Map type')
 
     def generator_check(self, g):

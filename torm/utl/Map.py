@@ -1,8 +1,5 @@
-from torm.field import Field
-
 from collections.abc import Iterable
 import inspect
-from torm.utl.Error import *
 
 
 def get_var_name(var, depth=2):
@@ -17,7 +14,7 @@ def get_var_name(var, depth=2):
     return None
 
 
-class Map(dict, Field):
+class Map(dict):
     ###
     # js风格的dict,可以用["key"]或.key访问元素
     # python的dict,原有的属性除了魔法属性，还有：
@@ -65,17 +62,9 @@ class Map(dict, Field):
         except AttributeError:  # 原有字典没有该属性时，将该属性作为字典的key，将值存入字典
             self[name] = value
 
-    def __get__(self, instance, owner):
-        return self.value
 
-    def __set__(self, instance, value):
-        if self.validate(value):
-            self.value = value
-
-    def validate(self, value):
-        model = self.model
-        key = self.name
-        if type(value) != self.__class__:
-            raise error_type(key, value, model, self.__class__)
-
-        return True
+if __name__ == "__main__":
+    #a = {'a': 3, 'b': {'c': 4}}
+    a = None
+    m = Map(a)
+    print(m)

@@ -8,16 +8,13 @@ from torm.utl.Map import Map
 
 
 class Model(metaclass=ModelMetaclass):
-    def __new__(cls, *args, **kws):
-
-        return super().__new__(cls)
-
     def __init__(self, *args, **kws):
-
         # 实例化的参数
         attrs = {}
         if args:
-            if isinstance(args[0], dict):
+            if args[0] == None:
+                pass
+            elif isinstance(args[0], dict):
                 attrs = dict(args[0])
             else:
                 attrs = dict(zip(self.__field__, args))
@@ -34,8 +31,11 @@ class Model(metaclass=ModelMetaclass):
                     raise TypeError(
                         f'type of "{key}" {self.__fields__[key]} can only be used in db {self.__fields__[key].only_db_types}')
 
-            if key in attrs:  # 如果实例化的参数有该值，就采用该值
-                setattr(self, key, attrs[key])
+            if key in attrs:  # 如果对象的参数有该字段的值，就采用该值
+                if attrs[key] == None:  # 如果该值为None,采用该字段的默认值
+                    setattr(self, key, self.__fields__[key].default)
+                else:
+                    setattr(self, key, attrs[key])
             else:  # 没有提供该值，就采用默认值
                 setattr(self, key, self.__fields__[key].default)
 
@@ -79,11 +79,14 @@ class Model(metaclass=ModelMetaclass):
         return iter(self.__field__)
 
     def __str__(self, pretty=False):
+        if not self.__bool__():
+            return 'Null'
         values = ', '.join('{}={!r}'.format(
             i, self[i]) for i in self.__field__)
         return '{}({})'.format(self.__class__.__name__, values)
 
     def __bool__(self):
+        # 如果所有字段都是空，则返回False,否则返回True
         bools = [bool(self[i]) for i in self.__field__]
         if True in bools:
             return True
@@ -104,7 +107,7 @@ class Model(metaclass=ModelMetaclass):
             return e
 
     def pretty(self):
-        values = ', '.join('\n    {}={!r}'.format(
+        values = ', '.join('\n    {} = {!r}'.format(
             i, self[i]) for i in self.__field__)
         return '{}({}\n)'.format(self.__class__.__name__, values)
 

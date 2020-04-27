@@ -1,6 +1,6 @@
 from torm import Model
 from torm import f
-from torm.utl.Map import Map
+from torm.utl import Map
 
 
 class Record(Model):
@@ -38,7 +38,7 @@ def test_insert():
         "group": ["thhk06@163.com", "kai.he@taraxa.io"],
         "commits": commits
     })
-
+    print(record)
     # print(record.pretty())
 
     # print(record.group)
@@ -50,10 +50,11 @@ def test_find():
     #hash = "0x123"
     #record = Record.FindOne(hash)
     record = Record.FindOne()
-    print(record.to_map())
+    print(record.pretty())
+    # print(record.to_map())
 
 
-def test_find_maney():
+def test_find_many():
     records = Record.FindMany()
     print(records)
 

@@ -10,7 +10,7 @@ from torm.field.Timestamp import Timestamp
 
 # 复杂数据类型，只有mongodb支持
 from torm.field.Dict import Dict
-from torm.utl.Map import Map
+from torm.field.Map import Map
 
 # 复杂列表数据类型，只有mongodb支持
 from torm.field.List import List

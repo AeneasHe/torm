@@ -7,6 +7,38 @@ from torm.utl.Expression import expression as expr, Expression
 from combomethod import combomethod
 
 
+import inspect
+
+from torm.utl.Map import Map
+
+
+def get_var_name(var, _depth=3):
+    # 当前命名空间
+    fr = inspect.currentframe()
+    for i in range(_depth):
+        fr = fr.f_back  # f_back获取父空间
+    vars = fr.f_locals.items()  # 获取该命名空间的所有变量
+    for var_name, var_val in vars:
+        if var_val is var:  # 如果该变量的和var相同，则var_name就是var的变量名
+            return var_name
+    return None
+
+
+def parse_args(args, kwargs, _depth=3):
+    where = {}
+
+    for arg in args:
+        if type(arg) in [dict, set]:
+            arg = Map(arg, _depth=_depth)
+            where.update(arg)
+        elif type(arg) == str:
+            key = get_var_name(arg, _depth=_depth)
+            where[key] = arg
+
+    where.update(kwargs)
+    return where
+
+
 class MysqlBuilder(BaseBuilder):
     operators = [
         '=', '<', '>', '<=', '>=', '<>', '!=',
@@ -22,7 +54,7 @@ class MysqlBuilder(BaseBuilder):
     __orwhere__ = []                           # orwhere处理逻辑
     __whereor__ = []                           # orwhere处理逻辑
 
-    __offset__ = 0                          # offset
+    __offset__ = None                          # offset
     __limit__ = None                           # 检索的数据条数
     __orderby__ = []                           # 排序字段
     __groupby__ = []  # 排序字段
@@ -59,8 +91,14 @@ class MysqlBuilder(BaseBuilder):
         self.__subquery__ = []
 
     # 增
+
     def create(self):
         data = self.to_dict()
+
+        # 如果数据库是mysql，默认id无效
+        if 'id' in data:
+            data.pop('id')
+
         if data:
             if data and isinstance(data, dict):
                 data = [
@@ -98,15 +136,27 @@ class MysqlBuilder(BaseBuilder):
     # 改
     def update(self, data):
         if data and isinstance(data, dict):
-            data = self._set_update_time(data)
+            #data = self._set_update_time(data)
             data = {key: value for key,
-                    value in data.items() if key in self.__model__.columns}
+                    value in data.items() if key in self.__field__}
             return self.connection.execute(self._compile_update(data))
-    # 查
 
+    def first(self):
+        self.__limit__ = 1
+        data = self.get()
+        if data:
+            return data.pop()
+        return data
+
+    # 查
     @combomethod
     def get(self):
-        result = self.connection.execute(self._compile_select(), DictCursor)
+        sql = self._compile_select()
+        try:
+            result = self.connection.execute(sql, DictCursor)
+        except Exception as e:
+            print(sql)
+            raise e
         return [Dict(index) for index in result]
 
     # 计数
@@ -132,7 +182,8 @@ class MysqlBuilder(BaseBuilder):
     def where(self, *args):
         length = args.__len__()
         if length == 1 and isinstance(args[0], dict):
-            self.__where__.append(args[0])
+            if args[0]:
+                self.__where__.append(args[0])
         elif length == 2:
             self.__where__.append(
                 {args[0]: self._check_columns_value(args[1])})
@@ -162,7 +213,7 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def offset(self, number):
-        if number <= 0:
+        if number < 0:
             raise Exception('offset number invalid')
         self.__offset__ = int(number)
         return self
@@ -214,8 +265,6 @@ class MysqlBuilder(BaseBuilder):
 
         return_sql = "select {} from {}{}{}".format(
             ','.join(self.__select__), self.table_name, join_sql, sub_sql, union_sql)
-
-        # print(return_sql)
 
         return return_sql
 
@@ -343,63 +392,62 @@ class MysqlBuilder(BaseBuilder):
         return '{} {} {}'.format(expr.format_column(data[0], self), data[1], expr.format_string(data[2]))
 
     @combomethod
-    def InsertOne(self, item):
+    def _compile_update(self, data):
+        return "update {} set {}{}".format(self.table_name, ','.join(self._compile_dict(data)), self._compile_where())
 
+    @combomethod
+    def _compile_delete(self):
+        return 'delete from {}{}'.format(self.table_name, self._compile_where())
+
+    @combomethod
+    def InsertOne(self, item):
         if not self.validate_type(item):
             raise TypeError(f'item must be {self.__class__} type')
-
-        item = encode_id(item.to_ordict())
-        return self.connection.create(self, item)
+        return item.create()
 
     @combomethod
     def InsertMany(self, items):
         all_validate_type = all([self.validate_type(item) for item in items])
         if not all_validate_type:
-            raise TypeError(f'list element must be {self.__class__} type')
+            raise TypeError(f'all list element must be {self.__class__} type')
 
-        table = self.connection.table(self)
-        return table.insert_many(items)
+        result = []
+        for item in items:
+            result.append(item.create())
+        return result
 
     @combomethod
     def FindOne(self, *args, **kwargs):
         where = parse_args(args, kwargs, _depth=4)
-
-        table = self.connection.table(self)
-
-        item = table.find_one(where)
-
-        item = self.__class__(decode_id(item))
+        items = self.where(where).limit(1).get()
+        if not items:
+            return None
+        item = self.__class__(items[0])
         return item
 
     @combomethod
     def FindMany(self, *args, **kwargs):
-        where = parse_args(args, kwargs)
-        table = self.connection.table(self)
+        where = parse_args(args, kwargs, _depth=4)
+        items = self.where(where).get()
 
-        items = table.find(where)
-
-        items = [Map(decode_id(item)) for item in items]
+        if not items:
+            return None
+        items = [self.__class__(item) for item in items]
         return items
 
     @combomethod
     def UpdateOne(self, where={}, item={}):
         if not where:
             return None
-        where = Map(where, _depth=4)
-        where = encode_id(where)
-
         if not item:
             return None
-        if "id" in item:
-            item.pop("id")
+        where = Map(where, _depth=4)
 
-        table = self.connection.table(self)
-        r = table.update_one(where, {"$set": item})
-        return r
+        if isinstance(item, self.__class__):
+            item = item.to_dict()
+        return self.where(where).update(item)
 
     @combomethod
     def DeleteOne(self, *args, **kwargs):
         where = parse_args(args, kwargs, _depth=4)
-        table = self.connection.table(self)
-        r = table.delete_one(where)
-        return r
+        self.where(where).delete()
