@@ -442,10 +442,15 @@ class MysqlBuilder(BaseBuilder):
         if not item:
             return None
         where = Map(where, _depth=4)
+
         if isinstance(item, self.__class__):
             item = item.to_dict()
 
-        # 先查找第一个，然后删除
+        # 禁止更新id字段
+        if "id" in item:
+            item.pop("id")
+
+        # 先查找第一个，然后更新
         _item = self.FindOne(where)
         if _item:
             return self.where({'id': _item.id}).update(item)

@@ -284,6 +284,8 @@ class MongoBuilder(BaseBuilder):
         item = table.find_one(where)
         if not item:
             return None
+
+        # 将字典转成Model
         item = self.__class__(decode_id(item))
         return item
 
@@ -291,7 +293,6 @@ class MongoBuilder(BaseBuilder):
     def FindMany(self, *args, **kwargs):
         where = parse_args(args, kwargs)
         table = self.connection.table(self)
-
         items = table.find(where)
         if not items:
             return []
@@ -307,8 +308,15 @@ class MongoBuilder(BaseBuilder):
 
         if not item:
             return None
+
+        if isinstance(item, self.__class__):
+            item = item.to_dict()
+
+        # 禁止更新id,_id字段
         if "id" in item:
             item.pop("id")
+        if "_id" in item:
+            item.pop("_id")
 
         table = self.connection.table(self)
         r = table.update_one(where, {"$set": item})
