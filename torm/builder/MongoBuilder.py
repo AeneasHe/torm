@@ -273,6 +273,7 @@ class MongoBuilder(BaseBuilder):
             raise TypeError(f'all list element must be {self.__class__} type')
 
         table = self.connection.table(self)
+        items = [encode_id(item.to_ordict()) for item in items]
         return table.insert_many(items)
 
     @combomethod
