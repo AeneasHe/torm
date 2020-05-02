@@ -260,8 +260,12 @@ class MongoBuilder(BaseBuilder):
     @combomethod
     def InsertOne(self, item):
         self.validate_type(item)
-        item = encode_id(item.to_ordict())
-        return self.connection.create(self, item)
+        item = encode_id(dict(item))
+        table = self.connection.table(self)
+        r = table.insert_one(item)
+        if r:
+            return str(r.inserted_id)
+        return None
 
     @combomethod
     def InsertMany(self, items):

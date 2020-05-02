@@ -1,11 +1,11 @@
 from torm import Model
 from torm import f
-from torm.utl import Map
+from torm.utl.Map import Map
 
 
 class Record(Model):
     __config__ = "mongo"
-
+    id = f.Str()
     hash = f.Str()
     subject = f.Str()
     promoter = f.Str()
@@ -31,6 +31,7 @@ def test_insert_one():
 
     hashtags = {'1': ['']}
     record = Record({
+        "id": '1',
         "hash": '12',
         "recorder": "thhk06@163.com",
         "subject": "test",
@@ -38,21 +39,27 @@ def test_insert_one():
         "group": ["thhk06@163.com", "kai.he@taraxa.io"],
         "commits": commits
     })
-    # print(record)
-    # print(record.pretty())
 
-    # print(record.group)
-    record = {
-        "hash": '12',
-        "recorder": "thhk06@163.com",
-        "subject": "test",
-        "hashtags": hashtags,
-        "group": ["thhk06@163.com", "kai.he@taraxa.io"],
-        "commits": commits
-    }
+    # for k in record:
+    #     print(k)
+    a = Map(record)
+    print(a)
 
-    r = Record.InsertOne(record)
-    print(r)
+    # for i in record:
+    #     print(record[i])
+
+    # record = {
+    #     "id": '5eacf4e81e57fa47f0a732c4',
+    #     "hash": '12',
+    #     "recorder": "thhk06@163.com",
+    #     "subject": "test",
+    #     "hashtags": hashtags,
+    #     "group": ["thhk06@163.com", "kai.he@taraxa.io"],
+    #     "commits": commits
+    # }
+
+    # r = Record.InsertOne(record)
+    # print(r)
 
 
 def test_find():

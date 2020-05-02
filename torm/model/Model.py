@@ -64,6 +64,9 @@ class Model(metaclass=ModelMetaclass):
             raise AttributeError(r"%s can not bind attribute '%s'" % (
                 self.__class__.__name__, key))
 
+    def __len__(self):
+        return len(self.__field__)
+
     def __setitem__(self, key, value):
         if key in self.__field__:
             self.__setattr__(key, value)
@@ -76,7 +79,8 @@ class Model(metaclass=ModelMetaclass):
                 self.__class__.__name__, key))
 
     def __iter__(self):
-        return iter(self.__field__)
+        for key in self.__field__:
+            yield key, self[key]
 
     def __str__(self, pretty=False):
         if not self.__bool__():
