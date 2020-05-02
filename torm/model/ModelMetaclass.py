@@ -1,6 +1,7 @@
 import collections
 
 from torm.utl.Config import config
+from torm.utl.Utl import to_snake_name
 from torm.field import *
 from torm.builder import MongoBuilder, MysqlBuilder
 from torm.connection import MongoConnection, MysqlConnection
@@ -81,7 +82,7 @@ class ModelMetaclass(type):
         # 表名
         __config['table'] = attrs.get(
             "__tablename__",
-            name.lower()
+            to_snake_name(name)
         )
 
         # 数据库连接参数

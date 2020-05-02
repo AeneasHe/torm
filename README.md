@@ -48,7 +48,7 @@ class Record(Model):
     # if no config file, torm  will use "test" as default.
     __dbname__ = 'test'
 
-    # table name: if not given, torm  will use model class name low case as default
+    # table name: if not given, torm  will use the snake name of the model class name as default
     __tablename__ = 'record'
 
     hash = Str()
