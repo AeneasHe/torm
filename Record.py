@@ -20,16 +20,16 @@ class Record(Model):
 
     commits = f.Dict()
     group = f.EmailList()
-    hashtags = f.Map()
+    hashtags = f.Dict  # f.Map()
 
     create_at = f.Int()
     update_at = f.Int()
 
 
-def test_insert():
+def test_insert_one():
     commits = {'user_id': 'some thing'}
 
-    hashtags = Map({'a': 2})
+    hashtags = {'1': ['']}
     record = Record({
         "hash": '12',
         "recorder": "thhk06@163.com",
@@ -38,12 +38,21 @@ def test_insert():
         "group": ["thhk06@163.com", "kai.he@taraxa.io"],
         "commits": commits
     })
-    print(record)
+    # print(record)
     # print(record.pretty())
 
     # print(record.group)
+    record = {
+        "hash": '12',
+        "recorder": "thhk06@163.com",
+        "subject": "test",
+        "hashtags": hashtags,
+        "group": ["thhk06@163.com", "kai.he@taraxa.io"],
+        "commits": commits
+    }
 
-    # Record.InsertOne(record)
+    r = Record.InsertOne(record)
+    print(r)
 
 
 def test_find():
@@ -64,4 +73,5 @@ def test_update_one():
     print(r)
 
 
-test_find()
+# test_find()
+test_insert_one()

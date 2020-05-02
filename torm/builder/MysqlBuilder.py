@@ -72,12 +72,12 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def reset(self):
-        self.__select__ = {}
-        self.__where__ = {}
+        self.__select__ = []
+        self.__where__ = []
         self.__orwhere__ = []
         self.__whereor__ = []
 
-        self.__offset__ = 0
+        self.__offset__ = None
         self.__limit__ = None
         self.__orderby__ = []
         self.__groupby__ = []
@@ -401,12 +401,13 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def InsertOne(self, item):
-        if not self.validate_type(item):
-            raise TypeError(f'item must be {self.__class__} type')
+        self.reset()
+        self.validate_type(item)
         return item.create()
 
     @combomethod
     def InsertMany(self, items):
+        self.reset()
         all_validate_type = all([self.validate_type(item) for item in items])
         if not all_validate_type:
             raise TypeError(f'all list element must be {self.__class__} type')
@@ -418,6 +419,7 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def FindOne(self, *args, **kwargs):
+        self.reset()
         where = parse_args(args, kwargs, _depth=4)
         items = self.where(where).limit(1).get()
         if not items:
@@ -427,6 +429,7 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def FindMany(self, *args, **kwargs):
+        self.reset()
         where = parse_args(args, kwargs, _depth=4)
         items = self.where(where).get()
 
@@ -437,6 +440,7 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def UpdateOne(self, where={}, item={}):
+        self.reset()
         if not where:
             return None
         if not item:
@@ -459,6 +463,7 @@ class MysqlBuilder(BaseBuilder):
 
     @combomethod
     def DeleteOne(self, *args, **kwargs):
+        self.reset()
         where = parse_args(args, kwargs, _depth=4)
         _item = self.FindOne(where)
         if _item:

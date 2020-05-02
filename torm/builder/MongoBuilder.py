@@ -81,8 +81,8 @@ class MongoBuilder(BaseBuilder):
         'all': '$all',
         'size': '$size',
     }
-    __select__ = {}     # 检出的字段
-    __where__ = {}      # 刷选
+    __select__ = []     # 检出的字段
+    __where__ = []      # 刷选
     __offset__ = 0      # offset
     __limit__ = 0    # 检索的数据条数
     __orderby__ = []    # 排序字段
@@ -124,7 +124,7 @@ class MongoBuilder(BaseBuilder):
             if isinstance(data, dict):
                 data = [data]
             # data = self._set_create_time(data)
-                return self.connection.create(self, data)
+                return str(self.connection.create(self, data))
         return None
 
     # 删
@@ -259,10 +259,7 @@ class MongoBuilder(BaseBuilder):
 
     @combomethod
     def InsertOne(self, item):
-
-        if not self.validate_type(item):
-            raise TypeError(f'item must be {self.__class__} type')
-
+        self.validate_type(item)
         item = encode_id(item.to_ordict())
         return self.connection.create(self, item)
 

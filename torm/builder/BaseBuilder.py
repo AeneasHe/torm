@@ -20,7 +20,15 @@ class BaseBuilder():
 
     @combomethod
     def validate_type(self, item):
-        return isinstance(item, self.__class__)
+        if isinstance(item, self.__class__):
+            return True
+        else:
+            try:
+                item = self(item)
+            except Exception as e:
+                raise TypeError(
+                    f'item must be or change to {self.__class__} type')
+            return True
 
     def _connection(self):
         config = self.__config__
@@ -30,4 +38,3 @@ class BaseBuilder():
 
         if config['db_type'] == 'mysql':
             return MysqlConnection(config)
-
