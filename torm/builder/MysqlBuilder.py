@@ -404,6 +404,7 @@ class MysqlBuilder(BaseBuilder):
     def InsertOne(self, item):
         self.reset()
         self.validate_type(item)
+        item = self(item)
         return item.create()
 
     @combomethod
@@ -415,6 +416,7 @@ class MysqlBuilder(BaseBuilder):
 
         result = []
         for item in items:
+            item = self(item)
             result.append(item.create())
         return result
 
