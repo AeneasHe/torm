@@ -141,6 +141,7 @@ class MysqlBuilder(BaseBuilder):
                     value in data.items() if key in self.__field__}
             return self.connection.execute(self._compile_update(data))
 
+    @combomethod
     def first(self):
         self.__limit__ = 1
         data = self.get()

@@ -32,7 +32,9 @@ def decode_id(result):
 
 def encode_id(arg):
     if "id" in arg:
-        arg["_id"] = ObjectId(str(arg["id"]))
+        # 如果id是空的，就去除，由数据库生成id
+        if str(arg["id"]):
+            arg["_id"] = ObjectId(str(arg["id"]))
         arg.pop("id")
     return arg
 
@@ -81,8 +83,8 @@ class MongoBuilder(BaseBuilder):
         'all': '$all',
         'size': '$size',
     }
-    __select__ = []     # 检出的字段
-    __where__ = []      # 刷选
+    __select__ = {}     # 检出的字段
+    __where__ = {}      # 刷选
     __offset__ = 0      # offset
     __limit__ = 0    # 检索的数据条数
     __orderby__ = []    # 排序字段
@@ -148,6 +150,17 @@ class MongoBuilder(BaseBuilder):
         return r
 
     # 查
+
+    @combomethod
+    def first(self):
+        self.__limit__ = 1
+        data = self.get()
+        if data:
+            return data.pop()
+
+        self.reset()
+        return data
+
     @combomethod
     def get(self):
         d = self.connection.get(self)
@@ -184,29 +197,49 @@ class MongoBuilder(BaseBuilder):
         return self
 
     @combomethod
-    def where(self, *args):
+    def where(self, *args, **kwargs):
         length = args.__len__()
-        if length == 1 and isinstance(args[0], dict):
-            self.__where__.update(args[0])
+        if length == 0:
+            where = parse_args(args, kwargs)
+            self.__where__.update(where)
+        elif length == 1 and isinstance(args[0], dict):
+            if args[0]:
+                where = parse_args(args, kwargs)
+                self.__where__.update(where)
+
         elif length == 2:
             if self.__where__.get('$and', None) is None:
                 self.__where__['$and'] = []
-            self.__where__['$and'].append({args[0]: args[1]})
+            where = parse_args((), {args[0]: args[1]})
+            self.__where__['$and'].append(where)
+
         elif length == 3:
             if self.__where__.get('$and', None) is None:
                 self.__where__['$and'] = []
             if args[1] in self.operators:
                 if args[1] == '=':
-                    self.__where__['$and'].append({args[0]: args[2]})
+                    where = parse_args((), {args[0]: args[2]})
+                    self.__where__['$and'].append(where)
                 else:
-                    self.__where__['$and'].append(
-                        self._compile_tuple((args[0], args[1], args[2])))
+                    where = self._compile_tuple((args[0], args[1], args[2]))
+                    where = parse_args((), where)
+                    self.__where__['$and'].append(where)
             else:
                 raise Exception(
                     'operator key world not found: "{}"'.format(args[1]))
         else:
             raise Exception('bad parameters in where function')
+
+        print(self.__where__)
         return self
+
+    # @combomethod
+    # def _check_columns_value(self, value):
+    #     if self.__subquery__ and len(self.__subquery__) >= 2 and isinstance(value, str):
+    #         tmp = value.split('.')
+    #         if len(tmp) == 2 and tmp[0] in self._get_subquery_alias():
+    #             return Expression(value)
+    #     return value
 
     @combomethod
     def orderby(self, column, direction='asc'):

@@ -5,6 +5,8 @@ from torm.utl.Map import Map
 
 class Record(Model):
     __config__ = "mongo"
+    __dbname__ = "test"
+
     id = f.Str()
     hash = f.Str()
     subject = f.Str()
@@ -31,7 +33,6 @@ def test_insert_one():
 
     hashtags = {'1': ['']}
     record = Record({
-        "id": '1',
         "hash": '12',
         "recorder": "thhk06@163.com",
         "subject": "test",
@@ -42,8 +43,8 @@ def test_insert_one():
 
     # for k in record:
     #     print(k)
-    a = Map(record)
-    print(a)
+    # a = Map(record)
+    # print(a)
 
     # for i in record:
     #     print(record[i])
@@ -58,13 +59,13 @@ def test_insert_one():
     #     "commits": commits
     # }
 
-    # r = Record.InsertOne(record)
-    # print(r)
+    r = Record.InsertOne(record)
+    print(r)
 
 
 def test_find():
-    #hash = "0x123"
-    #record = Record.FindOne(hash)
+    # hash = "0x123"
+    # record = Record.FindOne(hash)
     record = Record.FindOne()
     print(record.pretty())
     # print(record.to_map())
@@ -81,4 +82,11 @@ def test_update_one():
 
 
 # test_find()
-test_insert_one()
+# test_insert_one()
+
+# print(r)
+# print(Record.__dict__.keys())
+
+# r = Record.where({'id': '5ead0d7f34e0b4dddeb234e3'}).get()
+r = Record.where('id', '=', '5ead0d7f34e0b4dddeb234e3').first()
+print(r)

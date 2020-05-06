@@ -28,10 +28,12 @@ class MongoConnection(Connection):
     # 返回数据库
     def db(self, tablename):
         return self.connect()[tablename]
+
     def table(self, builder):
         tb = builder.table_name
-        return self.db(tb) 
+        return self.db(tb)
     # 增
+
     def create(self, builder, data):
         tb = builder.table_name
         return self.db(tb).insert(data)
