@@ -90,4 +90,6 @@ def test_update_one():
 # r = Record.where({'id': '5ead0d7f34e0b4dddeb234e3'}).get()
 #   r = Record.where('id', '=', '5ead0d7f34e0b4dddeb234e3').first()
 # print(r)
+# test_find_many()
+
 test_find()

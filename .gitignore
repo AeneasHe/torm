@@ -2,9 +2,7 @@ __pycache__
 .vscode
 
 .env
-./.env
-./.env.mongo
-./.env.mysql
+.env.*
 
 .DS_Store
 

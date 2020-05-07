@@ -427,7 +427,7 @@ class MysqlBuilder(BaseBuilder):
         items = self.where(where).limit(1).get()
         if not items:
             return None
-        item = self.__class__(items[0])
+        item = Map(items[0])
         return item
 
     @combomethod
@@ -435,10 +435,9 @@ class MysqlBuilder(BaseBuilder):
         self.reset()
         where = parse_args(args, kwargs, _depth=4)
         items = self.where(where).get()
-
         if not items:
             return None
-        items = [self.__class__(item) for item in items]
+        items = [Map(item) for item in items]
         return items
 
     @combomethod

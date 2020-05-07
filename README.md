@@ -16,8 +16,10 @@ pip install torm
 ```
 ## Env file
 add .env file to top folder or copy one file in envs to top folder.
-for example:
 
+if database has auth, set TORM_AUTH = on/off (default off).
+
+for example:
 ```
 TORM_DB_TYPE   = mongo
 TORM_DB       = test_default
@@ -26,6 +28,10 @@ TORM_HOST     = 127.0.0.1
 TORM_PORT     = 27017
 
 TORM_CHARSET  = utf8mb4
+
+TORM_AUTH     = on
+TORM_USER     = root
+TORM_PASSWORD = xxx
 ```
 
 ## Useage
