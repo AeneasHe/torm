@@ -321,7 +321,7 @@ class MongoBuilder(BaseBuilder):
             return None
 
         # 将字典转成Model
-        item = self.__class__(decode_id(item))
+        item = Map(decode_id(item))
         return item
 
     @combomethod

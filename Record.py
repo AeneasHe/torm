@@ -1,6 +1,7 @@
 from torm import Model
 from torm import f
 from torm.utl.Map import Map
+import json
 
 
 class Record(Model):
@@ -63,6 +64,22 @@ def test_insert_one():
     print(r)
 
 
+def test_json():
+    commits = {'user_id': 'some thing'}
+
+    hashtags = {'1': ['']}
+    record = Record({
+        "hash": '12',
+        "recorder": "thhk06@163.com",
+        "subject": "test",
+        "hashtags": hashtags,
+        "group": ["thhk06@163.com", "kai.he@taraxa.io"],
+        "commits": commits
+    })
+    r = json.dumps(record)
+    print(r)
+
+
 def test_find():
     # hash = "0x123"
     # record = Record.FindOne(hash)
@@ -92,4 +109,6 @@ def test_update_one():
 # print(r)
 # test_find_many()
 
-test_find()
+# test_find()
+
+test_json()
