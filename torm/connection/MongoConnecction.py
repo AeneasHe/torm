@@ -1,6 +1,7 @@
 
 from .Connection import Connection
 import pymongo
+from urllib import parse
 
 
 class MongoConnection(Connection):
@@ -22,7 +23,15 @@ class MongoConnection(Connection):
     # 连接数据库
     def connect(self):
         config = self._config
-        conn = pymongo.MongoClient(host=config['host'], port=config['port'])
+
+        if 'user' and 'password' in config:
+            user = parse.quote_plus(config['user'])
+            password = parse.quote_plus(config['password'])
+            MONGO_URL = f"mongodb://{user}:{password}@{config['host']}:{config['port']}/"
+        else:
+            MONGO_URL = f"mongodb://{config['host']}:{config['port']}/"
+        conn = pymongo.MongoClient(MONGO_URL)
+
         return conn[config['db']]
 
     # 返回数据库

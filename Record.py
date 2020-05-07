@@ -5,7 +5,7 @@ from torm.utl.Map import Map
 
 class Record(Model):
     __config__ = "mongo"
-    __dbname__ = "test"
+    # __dbname__ = "test"
 
     id = f.Str()
     hash = f.Str()
@@ -88,5 +88,6 @@ def test_update_one():
 # print(Record.__dict__.keys())
 
 # r = Record.where({'id': '5ead0d7f34e0b4dddeb234e3'}).get()
-r = Record.where('id', '=', '5ead0d7f34e0b4dddeb234e3').first()
-print(r)
+#   r = Record.where('id', '=', '5ead0d7f34e0b4dddeb234e3').first()
+# print(r)
+test_find()

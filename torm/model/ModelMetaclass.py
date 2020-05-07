@@ -91,7 +91,7 @@ class ModelMetaclass(type):
         __config['charset'] = config.env(env_name)('TORM_CHARSET')
 
         # 数据库用户名和密码配置
-        if db_type == "mysql":
+        if config.env(env_name)('TORM_USER') and config.env(env_name)('TORM_PASSWORD'):
             __config['user'] = config.env(env_name)('TORM_USER')
             __config['password'] = config.env(env_name)('TORM_PASSWORD')
 
