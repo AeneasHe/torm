@@ -43,7 +43,7 @@ from torm.field import Str,Int
 
 
 class Record(Model):
-    # config file ".env.mongo"; if not given, default config file is ".env".
+    # config file is ".env.mongo"; if not given, default config file is ".env".
     __configname__ = 'mongo'  
    
     # database type; if not given, will use db defined in config file
