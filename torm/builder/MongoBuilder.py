@@ -230,7 +230,6 @@ class MongoBuilder(BaseBuilder):
         else:
             raise Exception('bad parameters in where function')
 
-        print(self.__where__)
         return self
 
     # @combomethod
