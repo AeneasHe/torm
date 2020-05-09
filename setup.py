@@ -15,7 +15,7 @@ AUTHOR_EMAIL = "kai.he@taraxa.io"
 
 URL = "https://github.com/cofepy"
 
-VERSION = "0.0.9"
+VERSION = "0.1.0"
 
 LICENSE = "MIT"
 

@@ -3,6 +3,7 @@ from torm.field.Field import Field
 from torm.field.Int import Int
 from torm.field.Float import Float
 from torm.field.Str import Str
+from torm.field.Bool import Bool
 
 # 语义化数据类型
 from torm.field.Email import Email

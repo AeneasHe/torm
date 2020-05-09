@@ -7,6 +7,7 @@ class MysqlConnection(Connection):
 
     _instance = None
     # 单例模式
+
     @classmethod
     def __new__(cls, *args, **kws):
         if not cls._instance:
@@ -39,6 +40,7 @@ class MysqlConnection(Connection):
             raise error
 
         data = cursor.fetchall()
+
         if not hasattr(self, '_transaction'):
             self.connect().commit()
         cursor.close()

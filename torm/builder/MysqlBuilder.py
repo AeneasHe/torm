@@ -106,7 +106,7 @@ class MysqlBuilder(BaseBuilder):
 
             sql = self._compile_create(data)
             self.connection.execute(sql)
-        return self
+        return self.lastid()
 
     def insert(self, columns, data):
         self.connection.execute(self._compile_insert(columns, data))
@@ -202,6 +202,13 @@ class MysqlBuilder(BaseBuilder):
         else:
             raise Exception('bad parameters in where function')
         return self
+
+    def lastid(self):
+        data = self.connection.execute(self._compile_lastid())
+        return data[0][0] if data and data[0] and data[0][0] else None
+
+    def _compile_lastid(self):
+        return 'select last_insert_id() as lastid'
 
     @combomethod
     def orderby(self, column, direction='asc'):
