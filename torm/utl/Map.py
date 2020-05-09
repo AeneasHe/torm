@@ -62,9 +62,13 @@ class Map(dict):
         except AttributeError:  # 原有字典没有该属性时，将该属性作为字典的key，将值存入字典
             self[name] = value
 
+    def pretty(self):
+        values = ', '.join('\n    {} = {!r}'.format(
+            i, self[i]) for i in self.keys())
+        return '{}({}\n)'.format(self.__class__.__name__, values)
+
 
 if __name__ == "__main__":
-    #a = {'a': 3, 'b': {'c': 4}}
-    a = None
+    a = {'a': 3, 'b': {'c': 4}}
     m = Map(a)
-    print(m)
+    print(m.pretty())
