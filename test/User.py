@@ -1,3 +1,4 @@
+import wpath
 from torm import Model
 from torm import f
 
@@ -35,7 +36,7 @@ def test_insert_one():
 
 
 def test_find_one():
-    r = User.FindOne({'name': 'user_name'})
+    r = User.FindOne()
     print(r)
 
 
