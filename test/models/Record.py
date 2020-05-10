@@ -7,7 +7,6 @@ import json
 
 class Record(Model):
     __config__ = "mongo"
-    # __dbname__ = "test"
 
     id = f.Str()
     hash = f.Str()
@@ -81,12 +80,11 @@ def test_json():
     print(r)
 
 
-def test_find():
-    # hash = "0x123"
-    # record = Record.FindOne(hash)
+def test_find_one():
+    record = Record()
+    record.FindOne()
     record = Record.FindOne()
-    print(record.pretty())
-    # print(record.to_map())
+    print(record)
 
 
 def test_find_many():
@@ -97,6 +95,9 @@ def test_find_many():
 def test_update_one():
     r = Record.UpdateOne(hash, {'subject': 'test5'})
     print(r)
+
+
+test_find_one()
 
 
 # test_find()
@@ -112,4 +113,4 @@ def test_update_one():
 
 # test_find()
 
-test_json()
+# test_json()

@@ -6,7 +6,6 @@ import time
 
 class Account(Model):
     __config__ = 'mysql'
-    __dbtype__ = 'mysql'
 
     id = f.Int()
     user_id = f.Int()

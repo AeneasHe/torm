@@ -1,8 +1,6 @@
 from torm.builder.BaseBuilder import BaseBuilder
 from pymysql.cursors import DictCursor
 
-from torm.utl.Dict import Dict
-
 from torm.utl.Expression import expression as expr, Expression
 from combomethod import combomethod
 
@@ -158,7 +156,17 @@ class MysqlBuilder(BaseBuilder):
         except Exception as e:
             print(sql)
             raise e
-        return [Dict(index) for index in result]
+        return [Map(index) for index in result]
+
+    @combomethod
+    def all(self):
+        sql = self._compile_select()
+        try:
+            result = self.connection.execute(sql, DictCursor)
+        except Exception as e:
+            print(sql)
+            raise e
+        return [Map(index) for index in result]
 
     # 计数
     @combomethod
@@ -457,9 +465,10 @@ class MysqlBuilder(BaseBuilder):
             return None
         where = Map(where, _depth=4)
 
-        if isinstance(item, self.__class__):
-            item = item.to_dict()
+        if not isinstance(item, self.__class__):
+            item = self.__class__(item)
 
+        item = item.to_dict()
         # 禁止更新id字段
         if "id" in item:
             item.pop("id")
