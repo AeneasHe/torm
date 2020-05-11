@@ -1,9 +1,10 @@
+import wpath
 from torm import Model
 from torm import f
 
 
 class Group(Model):
-    __tablename__ = 'group'  # 指定表名，默认采用类名的小写作为表名
+    __config__ = "mongo"
 
     group = f.EmailList()
     group_hash = f.Str()

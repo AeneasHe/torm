@@ -1,3 +1,4 @@
+import wpath
 from torm import Model
 from torm import f
 
@@ -10,8 +11,8 @@ class User(Model):
     name = f.Str(32)
     role = f.Str(64, default="user")
 
-    phone = f.Str(32)
-    email = f.Str(64)
+    phone = f.Str(32, default="NULL")
+    email = f.Str(64, default="NULL")
     password = f.Str(64)
 
     register_finish_step = f.Int(default=1)
@@ -28,15 +29,16 @@ def test_create_table():
 
 
 def test_insert_one():
-    user = User(name='user_name', display_name='user name')
-    user.display_name = 'User Name'
-    u = User.InsertOne(user)
-    print(u)
+    user = User(name='kai', display_name='Kai', phone=None)
+    print(user)
+    #u = User.InsertOne(user)
+    # print(u)
 
 
 def test_find_one():
-    r = User.FindOne({'name': 'user_name'})
-    print(r)
+    user = User.FindOne()
+    user.name = 'Kai'
+    User.UpdateOne({'id': user.id}, user)
 
 
 def test_find_many():
@@ -54,8 +56,17 @@ def test_delete_one():
     print(r)
 
 
+def test_like():
+    keyword = 'thhk'
+    limit = 2
+    users = User.where('email', 'like', "%" + keyword +
+                       "%").limit(limit).get()
+    print(users)
+
+
 # test_insert_one()
-test_find_one()
-# test_update_one()
+# test_find_one()
+test_update_one()
 # test_find_one()
 # test_delete_one()
+# test_like()

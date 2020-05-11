@@ -1,3 +1,4 @@
+import wpath
 from torm import Model
 from torm import f
 
@@ -16,9 +17,10 @@ class Recorder(Model):
 
 
 def test_find_many():
-    rs = Recorder.FindMany()
-    for r in rs:
-        print(r)
+    rs = Recorder.count()
+    print(rs)
+    # for r in rs:
+    #     print(r)
 
 
 test_find_many()
