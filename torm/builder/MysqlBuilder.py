@@ -136,8 +136,9 @@ class MysqlBuilder(BaseBuilder):
         if data and isinstance(data, dict):
             data = {key: value for key,
                     value in data.items() if key in self.__field__}
-
-            return self.connection.execute(self._compile_update(data))
+            sql = self._compile_update(data)
+            print(sql)
+            return self.connection.execute(sql)
 
     @combomethod
     def first(self):
@@ -466,10 +467,8 @@ class MysqlBuilder(BaseBuilder):
             return None
         where = Map(where, _depth=4)
 
-        if not isinstance(item, self.__class__):
-            item = self(item)
-
-        item = item.to_dict()
+        if isinstance(item, self.__class__):
+            item = item.to_dict()
 
         # 禁止更新id字段
         if "id" in item:
