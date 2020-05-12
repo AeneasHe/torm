@@ -134,9 +134,9 @@ class MysqlBuilder(BaseBuilder):
     # 改
     def update(self, data):
         if data and isinstance(data, dict):
-            #data = self._set_update_time(data)
             data = {key: value for key,
                     value in data.items() if key in self.__field__}
+
             return self.connection.execute(self._compile_update(data))
 
     @combomethod
@@ -244,11 +244,6 @@ class MysqlBuilder(BaseBuilder):
     @combomethod
     def _columnize(self, columns):
         return tuple(columns).__str__().replace('\'', '`')
-
-    @combomethod
-    def _valueize(self, data):
-        # return ','.join([tuple(index.values()).__str__() for index in data])
-        return ','.join([str(tuple(index.values())).replace("'NULL'", 'null').replace("None", 'null') for index in data])
 
     @combomethod
     def _format_columns(self, columns):
@@ -398,7 +393,7 @@ class MysqlBuilder(BaseBuilder):
     @combomethod
     def _compile_dict(self, data):
 
-        return ['{}={}'.format(expr.format_column(index, self), expr.format_string(value)) for index, value in data.items()]
+        return ['{}={}'.format(expr.format_column(index, self), expr.format_string(value)).replace("'NULL'", 'null').replace("None", 'null') for index, value in data.items()]
 
     @combomethod
     def _compile_tuple(self, data):
@@ -415,6 +410,11 @@ class MysqlBuilder(BaseBuilder):
     @combomethod
     def _compile_delete(self):
         return 'delete from {}{}'.format(self.table_name, self._compile_where())
+
+    @combomethod
+    def _valueize(self, data):
+        # return ','.join([tuple(index.values()).__str__() for index in data])
+        return ','.join([str(tuple(index.values())).replace("'NULL'", 'null').replace("None", 'null') for index in data])
 
     @combomethod
     def InsertOne(self, item):
@@ -459,6 +459,7 @@ class MysqlBuilder(BaseBuilder):
     @combomethod
     def UpdateOne(self, where={}, item={}):
         self.reset()
+
         if not where:
             return None
         if not item:
@@ -466,9 +467,10 @@ class MysqlBuilder(BaseBuilder):
         where = Map(where, _depth=4)
 
         if not isinstance(item, self.__class__):
-            item = self.__class__(item)
+            item = self(item)
 
         item = item.to_dict()
+
         # 禁止更新id字段
         if "id" in item:
             item.pop("id")
