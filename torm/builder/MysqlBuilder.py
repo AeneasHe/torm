@@ -248,7 +248,7 @@ class MysqlBuilder(BaseBuilder):
     @combomethod
     def _valueize(self, data):
         # return ','.join([tuple(index.values()).__str__() for index in data])
-        return ','.join([str(tuple(index.values())).replace("'NULL'", 'null') for index in data])
+        return ','.join([str(tuple(index.values())).replace("'NULL'", 'null').replace("None", 'null') for index in data])
 
     @combomethod
     def _format_columns(self, columns):

@@ -11,8 +11,8 @@ class User(Model):
     name = f.Str(32)
     role = f.Str(64, default="user")
 
-    phone = f.Str(32, default="NULL")
-    email = f.Str(64, default="NULL")
+    phone = f.Str(32)
+    email = f.Email()
     password = f.Str(64)
 
     register_finish_step = f.Int(default=1)
@@ -21,6 +21,7 @@ class User(Model):
     current_address = f.Str(42)
 
     login_timestamp = f.Int()
+    update_at = f.Int()
     create_at = f.Int()  # 创建时间
 
 
@@ -29,9 +30,9 @@ def test_create_table():
 
 
 def test_insert_one():
-    user = User(name='kai', display_name='Kai', phone=None)
+    user = User(name='kai', display_name='Kai', phone=None, email=None)
     print(user)
-    #u = User.InsertOne(user)
+    u = User.InsertOne(user)
     # print(u)
 
 
@@ -64,9 +65,9 @@ def test_like():
     print(users)
 
 
-# test_insert_one()
+test_insert_one()
 # test_find_one()
-test_update_one()
+# test_update_one()
 # test_find_one()
 # test_delete_one()
 # test_like()

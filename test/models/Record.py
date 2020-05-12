@@ -35,7 +35,7 @@ def test_insert_one():
     hashtags = {'1': ['']}
     record = Record({
         "hash": '12',
-        "recorder": "thhk06@163.com",
+        "recorder": None,
         "subject": "test",
         "hashtags": hashtags,
         "group": ["thhk06@163.com", "kai.he@taraxa.io"],
@@ -97,11 +97,12 @@ def test_update_one():
     print(r)
 
 
-test_find_one()
+# test_find_one()
 
+
+test_insert_one()
 
 # test_find()
-# test_insert_one()
 
 # print(r)
 # print(Record.__dict__.keys())

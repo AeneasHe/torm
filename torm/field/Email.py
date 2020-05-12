@@ -11,7 +11,7 @@ class Email(Field):
             'short': None,
             'long': None,
             'meta': 'short',
-            'default': '',
+            'default': None,
             'field_type': 'email',
             'key': False,
             'only_db_types': None
@@ -29,7 +29,7 @@ class Email(Field):
     def validate(self, value):
         model = self.model
         key = self.name
-        if value == "":
+        if value == "" or value == None:
             return True
 
         if type(value) != str:

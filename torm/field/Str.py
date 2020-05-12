@@ -16,7 +16,7 @@ class Str(Field):
             'short': None,
             'long': None,
             'meta': 'short',
-            'default': '',
+            'default': None,
             'field_type': field_type,
             'key': False,
             'only_db_types': None
@@ -34,6 +34,9 @@ class Str(Field):
     def validate(self, value):
         model = self.model
         key = self.name
+        if value == None:
+            return True
+
         if type(value) != str:
             raise error_type(key, value, model, str)
 
