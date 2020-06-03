@@ -47,7 +47,7 @@ class EmailList(Field):
             [a-zA-Z0-9._%+-]+           # email-username
             @
             [a-zA-Z0-9.-]+              # domain-name
-            \.[a-zA-Z]{2,4}             # dot-something
+            \.[a-zA-Z]+             # dot-something
             )''', re.VERBOSE)
 
         s = re.search(p, item)
