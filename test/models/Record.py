@@ -81,8 +81,8 @@ def test_json():
 
 
 def test_find_one():
-    record = Record()
-    record.FindOne()
+    # record = Record()
+    # record.FindOne()
     record = Record.FindOne()
     print(record)
 
@@ -97,21 +97,21 @@ def test_update_one():
     print(r)
 
 
-# test_find_one()
+if __name__ == "__main__":
+    test_find_one()
 
+    # test_insert_one()
 
-test_insert_one()
+    # test_find()
 
-# test_find()
+    # print(r)
+    # print(Record.__dict__.keys())
 
-# print(r)
-# print(Record.__dict__.keys())
+    # r = Record.where({'id': '5ead0d7f34e0b4dddeb234e3'}).get()
+    #   r = Record.where('id', '=', '5ead0d7f34e0b4dddeb234e3').first()
+    # print(r)
+    # test_find_many()
 
-# r = Record.where({'id': '5ead0d7f34e0b4dddeb234e3'}).get()
-#   r = Record.where('id', '=', '5ead0d7f34e0b4dddeb234e3').first()
-# print(r)
-# test_find_many()
+    # test_find()
 
-# test_find()
-
-# test_json()
+    # test_json()

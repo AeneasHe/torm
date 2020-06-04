@@ -23,13 +23,15 @@ class MongoConnection(Connection):
     # 连接数据库
     def connect(self):
         config = self._config
-
-        if 'user' and 'password' in config:
+        if config['url']:
+            MONGO_URL = config['url']
+        elif 'user' and 'password' in config:
             user = parse.quote_plus(config['user'])
             password = parse.quote_plus(config['password'])
-            MONGO_URL = f"mongodb://{user}:{password}@{config['host']}:{config['port']}/"
+            MONGO_URL = f"mongodb://{user}:{password}@{config['host']}:{config['port']}/admin"
         else:
-            MONGO_URL = f"mongodb://{config['host']}:{config['port']}/"
+            MONGO_URL = f"mongodb://{config['host']}:{config['port']}/admin"
+
         conn = pymongo.MongoClient(MONGO_URL)
 
         return conn[config['db']]

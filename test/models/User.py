@@ -38,8 +38,9 @@ def test_insert_one():
 
 def test_find_one():
     user = User.FindOne()
-    user.name = 'Kai'
-    User.UpdateOne({'id': user.id}, user)
+    print(user)
+    # user.name = 'Kai'
+    # User.UpdateOne({'id': user.id}, user)
 
 
 def test_find_many():
@@ -65,9 +66,10 @@ def test_like():
     print(users)
 
 
-test_insert_one()
-# test_find_one()
-# test_update_one()
-# test_find_one()
-# test_delete_one()
-# test_like()
+if __name__ == "__main__":
+    test_find_one()
+    # test_insert_one()
+    # test_update_one()
+    # test_find_one()
+    # test_delete_one()
+    # test_like()

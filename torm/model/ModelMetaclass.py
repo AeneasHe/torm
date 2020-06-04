@@ -86,6 +86,7 @@ class ModelMetaclass(type):
         )
 
         # 数据库连接参数
+        __config['url'] = config.env(env_name)('TORM_URL', default=None)
         __config['host'] = config.env(env_name)('TORM_HOST')
         __config['port'] = int(config.env(env_name)('TORM_PORT'))
         __config['charset'] = config.env(env_name)('TORM_CHARSET')
