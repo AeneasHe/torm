@@ -445,6 +445,7 @@ class MysqlBuilder(BaseBuilder):
         if not items:
             return None
         item = Map(items[0])
+        item = self.model(item)
         return item
 
     @combomethod

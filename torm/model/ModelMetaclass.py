@@ -47,20 +47,33 @@ class ModelMetaclass(type):
 
         attrs['config'] = attrs['__config__']
         attrs['db_name'] = attrs['__config__']['db']
-        attrs['table_name'] = attrs['__config__']['table']
-        attrs['connection'] = _connection(attrs['__config__'])
+
+        # attrs['table_name'] = attrs['__config__']['table']
+        # attrs['connection'] = _connection(attrs['__config__'])
 
         # 根据数据库类型，继承各数据库的builder
         dbtype = attrs['__config__']['db_type']
+        bases = bases + (dict,)
         if dbtype == 'mongo':
-            bases = bases + (MongoBuilder,)
+            builder = MongoBuilder
         elif dbtype == 'mysql':
-            bases = bases + (MysqlBuilder,)
+            builder = MysqlBuilder
 
+        builder.__config__ = attrs['__config__']
+        builder.table_name = attrs['__config__']['table']
+        builder.connection = _connection(attrs['__config__'])
+
+        attrs['builder'] = builder()
+        # attrs['model']=
+
+        # bases = bases + (builder,)
+        # cls.builder = builder
         # 使Model同时继承builder
         return type.__new__(cls, name, bases, attrs)
 
     def __init__(self, *args, **kwargs):
+        if self.__name__ != 'Model':
+            self.builder.model = self
         super().__init__(*args, **kwargs)
 
     def init_config(cls, name, attrs):
@@ -124,8 +137,11 @@ class ModelMetaclass(type):
 
     def __getattribute__(self, key):
         if key == "__new__":
-            return object.__new__(self)
+            # return object.__new__(self)
+            # print(self)
+            return dict.__new__(self)
         try:
             return object.__getattribute__(self, key)
         except:
-            return getattr(object.__new__(self), key)
+
+            return self.builder.__getattribute__(key)
