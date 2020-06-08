@@ -84,10 +84,6 @@ class ModelMetaclass(type):
 
         if db_type == "mysql":
             __config['charset'] = config.env(env_name)('TORM_CHARSET')
-
-        # 数据库连接参数
-        __config['url'] = config.env(env_name)('TORM_URL', default=None)
-        if not __config['url']:
             __config['host'] = config.env(env_name)('TORM_HOST')
             __config['port'] = int(config.env(env_name)('TORM_PORT'))
             __config['db'] = attrs.get(
@@ -95,18 +91,28 @@ class ModelMetaclass(type):
                 config.env(env_name)('TORM_DB')
             )
         else:
-            url_parts = urllib.parse.urlparse(__config['url'])
-            path_parts = url_parts[2].rpartition('/')
-            if path_parts[2]:
-                __config['db'] = attrs.get(
-                    "__dbname__",
-                    path_parts[2]
-                )
-            else:
+            # 数据库连接参数
+            __config['url'] = config.env(env_name)('TORM_URL', default=None)
+            if not __config['url']:
+                __config['host'] = config.env(env_name)('TORM_HOST')
+                __config['port'] = int(config.env(env_name)('TORM_PORT'))
                 __config['db'] = attrs.get(
                     "__dbname__",
                     config.env(env_name)('TORM_DB')
                 )
+            else:
+                url_parts = urllib.parse.urlparse(__config['url'])
+                path_parts = url_parts[2].rpartition('/')
+                if path_parts[2]:
+                    __config['db'] = attrs.get(
+                        "__dbname__",
+                        path_parts[2]
+                    )
+                else:
+                    __config['db'] = attrs.get(
+                        "__dbname__",
+                        config.env(env_name)('TORM_DB')
+                    )
 
         # 数据库用户名和密码配置
         auth = config.env(env_name)("TORM_AUTH", default="off")
