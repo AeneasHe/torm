@@ -15,7 +15,7 @@ AUTHOR_EMAIL = "kai.he@taraxa.io"
 
 URL = "https://github.com/cofepy"
 
-VERSION = "0.1.8"
+VERSION = "0.1.9"
 
 LICENSE = "MIT"
 
@@ -23,7 +23,9 @@ setup(
     name=NAME,
     version=VERSION,
     python_requires='>=3.7',
-    install_requires=[],
+    install_requires=[
+        "pymongo[tls,srv]==3.9.0"
+    ],
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
