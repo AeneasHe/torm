@@ -21,6 +21,7 @@ def get_var_name(var, _depth=3):
     return None
 
 
+# 将dict中的_id转换成id
 def decode_id(result):
     if not result:
         return result
@@ -30,6 +31,7 @@ def decode_id(result):
     return result
 
 
+# 将dict中的id转换成_id
 def encode_id(arg):
     if "id" in arg:
         # 如果id是空的，就去除，由数据库生成id
@@ -290,11 +292,16 @@ class MongoBuilder(BaseBuilder):
             return {data[0]: {self.operators_map[data[1]]: data[2]}}
 
     @combomethod
-    def InsertOne(self, item):
+    def InsertOne(self, item, duplicate=False):
         self.validate_type(item)
         item = encode_id(dict(item))
         table = self.connection.table(self)
-        r = table.insert_one(item)
+        if duplicate:
+            r = table.insert_one(item)
+        else:
+            # 默认不存在时才插入
+            r = table.update_one(item, {
+                                 '$set': item}, upsert=True)
         if r:
             return str(r.inserted_id)
         return None
