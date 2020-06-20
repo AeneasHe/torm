@@ -39,10 +39,11 @@ class Model(metaclass=ModelMetaclass):
             else:  # 没有提供该值，就采用默认值
                 setattr(self, key, self.__fields__[key].default)
 
-        # 父类Builder初始化
-        super().__init__()
+        # 父类(dict，Builder)初始化
+        super().__init__(self.items())
         self.isinstance = True
         self.isclass = False
+        self.current_key_index = None
 
     def __len__(self):
         return len(self.__field__)
@@ -58,7 +59,7 @@ class Model(metaclass=ModelMetaclass):
         # 限制可以绑定的属性
         if key in self.__field__:
             object.__setattr__(self, key, value)
-        elif key in ['connection', 'config', 'table_name', 'isinstance', 'isclass'] or (key.startswith('__') and key.endswith('__')):
+        elif key in ['connection', 'builder', 'config', 'table_name', 'isinstance', 'isclass', 'current_key_index'] or (key.startswith('__') and key.endswith('__')):
             object.__setattr__(self, key, value)
         else:
             raise AttributeError(r"%s can not bind attribute '%s'" % (
@@ -81,6 +82,18 @@ class Model(metaclass=ModelMetaclass):
     def __iter__(self):
         for key in self.__field__:
             yield key, self[key]
+
+    # def __next__(self):
+    #     if self.current_key_index == None:
+    #         self.current_key_index = 0
+    #         return self.__field__[self.current_key_index]
+    #     else:
+    #         self.current_key_index += 1
+    #         try:
+    #             return self.__field__[self.current_key_index]
+    #         except:
+    #             self.current_key_index = None
+    #             raise StopIteration
 
     def __str__(self, pretty=False):
         if not self.__bool__():
@@ -109,6 +122,23 @@ class Model(metaclass=ModelMetaclass):
             return self
         except Exception as e:
             return e
+
+    def keys(self):
+        return self.__field__
+
+    def values(self):
+        print('values')
+        return 'd'
+
+    def has_key(self):
+        print('=== has key')
+        return True
+
+    def items(self):
+        return self.__iter__()
+
+    def default(self):
+        return "test"
 
     def pretty(self):
         values = ', '.join('\n    {} = {!r}'.format(

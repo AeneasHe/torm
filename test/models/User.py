@@ -1,6 +1,7 @@
 import wpath
 from torm import Model
 from torm import f
+import json
 
 
 class User(Model):
@@ -39,8 +40,8 @@ def test_insert_one():
 def test_find_one():
     user = User.FindOne()
     print(user)
-    # user.name = 'Kai'
-    # User.UpdateOne({'id': user.id}, user)
+    user = User()
+    print(json.dumps(user))
 
 
 def test_find_many():
