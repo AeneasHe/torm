@@ -70,7 +70,10 @@ class Int(Field):
         key = self.name
 
         if type(value) != int:
-            raise error_type(key, value, model, int)
+            try:
+                value = int(value)
+            except:
+                raise error_type(key, value, model, int)
         if self.left:
             if self.meta in ['both', 'left']:
                 if not value >= self.left:

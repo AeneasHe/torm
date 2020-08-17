@@ -40,8 +40,8 @@ def test_insert_one():
 def test_find_one():
     user = User.FindOne()
     print(user)
-    user = User()
-    print(json.dumps(user))
+    # user = User()
+    # print(json.dumps(user))
 
 
 def test_find_many():

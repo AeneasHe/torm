@@ -34,8 +34,9 @@ def decode_id(result):
 # 将dict中的id转换成_id
 def encode_id(arg):
     if "id" in arg:
-        # 如果id是空的，就去除，由数据库生成id
-        if str(arg["id"]):
+        if arg["id"] == None:
+            pass
+        elif str(arg["id"]):
             arg["_id"] = ObjectId(str(arg["id"]))
         arg.pop("id")
     return arg
@@ -298,13 +299,14 @@ class MongoBuilder(BaseBuilder):
         table = self.connection.table(self)
         if duplicate:
             r = table.insert_one(item)
+            if r:
+                return str(r.inserted_id)
+            return None
         else:
             # 默认不存在时才插入
             r = table.update_one(item, {
                                  '$set': item}, upsert=True)
-        if r:
-            return str(r.inserted_id)
-        return None
+            return r.upserted_id
 
     @combomethod
     def InsertMany(self, items):

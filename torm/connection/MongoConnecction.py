@@ -30,7 +30,7 @@ class MongoConnection(Connection):
             password = parse.quote_plus(config['password'])
             MONGO_URL = f"mongodb://{user}:{password}@{config['host']}:{config['port']}/admin"
         else:
-            MONGO_URL = f"mongodb://{config['host']}:{config['port']}/admin"
+            MONGO_URL = f"mongodb://{config['host']}:{config['port']}"
 
         conn = pymongo.MongoClient(MONGO_URL)
 
